@@ -1,7 +1,6 @@
 from django.db import models
 from neighborhood.models import Neighborhood
 
-# Create your models here.
 class News(models.Model):
     title       = models.CharField(max_length= 30)
     text        = models.TextField(max_length= 100)
