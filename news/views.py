@@ -1,15 +1,14 @@
-from django.shortcuts import render
-from rest_framework import viewsets
-from rest_framework import permissions
 from news.serializers import NewsSerializer
 from news.models import News
+from neighborhood.models import House
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
+class NewsByUserView(APIView):
+    def get(self, request, pk, format=None):
+        neighborhood_id = House.objects.get(id = pk).Neighborhood.id
+        queryset = News.objects.filter(Neighborhood_id=neighborhood_id)
+        serializer = NewsSerializer(queryset, many=True)
+        return Response( {'rows' : serializer.data} )
 
-# Create your views here.
-class NewsViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = News.objects.filter(Neighborhood_id=1)
-    serializer_class = NewsSerializer
-    #permission_classes = [permissions.IsAuthenticated]
+        
