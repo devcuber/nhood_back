@@ -17,7 +17,7 @@ class LoginView(APIView):
                     'username' : house.user,
                     'name' : house.number,
                     'token' : 'dummy-auth-token'
-                })      
+                }, status = status.HTTP_200_OK)      
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
         except:       
             return Response({}, status=status.HTTP_400_BAD_REQUEST)
