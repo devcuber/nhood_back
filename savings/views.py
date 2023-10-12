@@ -2,22 +2,33 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from savings.models import Balance, Movement, Payment
 from rest_framework.response import Response
+from django.db.models import Sum
 
 class SavingsSummaryView(APIView):
     def get(self, request, pk, format=None):
         balance = Balance.objects.get(house_id = pk)
-        last_movement = Movement.objects.filter(Neighborhood_id = balance.house.Neighborhood_id).order_by('-date','-time').first()
+        nhood_id = balance.house.Neighborhood_id
+
+        last_movement = Movement.objects.filter(Neighborhood_id = nhood_id).order_by('-date','-time').first()
+        
+        nhood_payments_in  = Payment.objects.filter(house__house__Neighborhood_id = nhood_id, ispaid = True).aggregate(Sum('amount'))
+        nhood_payments_out = {'amount__sum':0} 
+        nhood_balance = nhood_payments_in.get('amount__sum',0) - nhood_payments_out.get('amount__sum',0)
+
+        nhood_debt = Payment.objects.filter(house__house__Neighborhood_id = nhood_id, ispaid = False).aggregate(Sum('amount'))
+        nhood_debt = nhood_debt['amount__sum']
+
         return Response({
-            "current_balance"           : "${:,.2f}".format(balance.balance),
-            "current_balance_label"     : f"Saldo {balance.house.number}",
-            "outstanding_balance"       : "${:,.2f}".format(balance.debt),
-            "outstanding_balance_label" : f"Deuda {balance.house.number}",
-            "month_income"              : "$0.00",
-            "month_income_label"        : "Ingreso del mes",
-            "month_expenses"            : "$0.00",
-            "month_expenses_label"      : "Gastos del mes",
-            "updated_at"                : f'{last_movement.date.strftime("%d/%m/%Y")} {last_movement.time}',
-            "updated_at_label"          : "Actualizado"
+            "my_current_balance"           : "${:,.2f}".format(balance.balance),
+            "my_current_balance_label"     : f"Saldo {balance.house.number}",
+            "my_outstanding_balance"       : "${:,.2f}".format(balance.debt),
+            "my_outstanding_balance_label" : f"Deuda {balance.house.number}",
+            "our_current_balance"          : "${:,.2f}".format(nhood_balance),
+            "our_current_balance_label"    : f"Saldo {balance.house.Neighborhood.name}",
+            "our_outstanding_balance"      : "${:,.2f}".format(nhood_debt),
+            "our_outstanding_balance_label": f"Pendiente {balance.house.Neighborhood.name}",
+            "updated_at"                   : f'{last_movement.date.strftime("%d/%m/%Y")} {last_movement.time}',
+            "updated_at_label"             : "Actualizado"
         })
 
 class SavingsResumeView(APIView):
