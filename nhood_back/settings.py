@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,17 +79,27 @@ WSGI_APPLICATION = 'nhood_back.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'dtnqpcge', 
+#        'USER': 'dtnqpcge',
+#        'PASSWORD': 'VQ03Q5AnO7DQ-fiaYMJ0xKx67Wq4KleR',
+#        'HOST': 'peanut.db.elephantsql.com', 
+#        'PORT': '5432',
+#    }
+#}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dtnqpcge', 
-        'USER': 'dtnqpcge',
-        'PASSWORD': 'VQ03Q5AnO7DQ-fiaYMJ0xKx67Wq4KleR',
-        'HOST': 'peanut.db.elephantsql.com', 
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'devcuber$nhooddb',
+        'USER': 'devcuber',
+        'PASSWORD': 'nhoodpassword',
+        'HOST':'devcuber.mysql.pythonanywhere-services.com',
+        'PORT':'3306',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -124,7 +135,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = 'static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
