@@ -53,7 +53,7 @@ class PaymentConcept(models.Model):
     def save(self, *args, **kwargs):
         super(PaymentConcept, self).save(*args, **kwargs)
         nhoodid = self.Neighborhood.id
-        for house in House.objects.filter(Neighborhood_id = nhoodid):
+        for house in Balance.objects.filter(house__Neighborhood_id = nhoodid):
             payment = Payment(
                 house = house,
                 amount = self.amount,
