@@ -82,7 +82,7 @@ class PaymentAdminInline(admin.TabularInline):
     
     def get_queryset(self, request):
         qs = super(PaymentAdminInline, self).get_queryset(request)
-        return qs.filter(ispaid=False)
+        return qs.filter(ispaid=False).order_by("concept__order")
 
 class BalanceAdmin(admin.ModelAdmin):
     list_display = ["house","balance","debt"]
