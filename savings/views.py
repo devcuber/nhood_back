@@ -26,9 +26,9 @@ class SavingsSummaryView(APIView):
 
         return Response({
             "my_current_balance"           : "${:,.2f}".format(balance.balance),
-            "my_current_balance_label"     : f"Saldo {balance.house.number}",
+            "my_current_balance_label"     : f"Saldo {balance.house.name}",
             "my_outstanding_balance"       : "${:,.2f}".format(balance.debt),
-            "my_outstanding_balance_label" : f"Deuda {balance.house.number}",
+            "my_outstanding_balance_label" : f"Deuda {balance.house.name}",
             "our_current_balance"          : "${:,.2f}".format(nhood_balance),
             "our_current_balance_label"    : f"Saldo {balance.house.Neighborhood.name}",
             "our_outstanding_balance"      : "${:,.2f}".format(nhood_debt),
@@ -54,7 +54,7 @@ class SavingsResumeView(APIView):
             
             rows.append({
                 "id"          : balance.house.id,
-                "name"        : balance.house.number,
+                "name"        : balance.house.name,
                 "total_label" : "Deuda",
                 "total"       : "${:,.2f}".format(balance.debt),
                 "total_status": "debt" if balance.debt else "no-debt",
