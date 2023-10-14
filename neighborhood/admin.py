@@ -6,7 +6,7 @@ class NeighborhoodAdmin(admin.ModelAdmin):
     pass
 
 class HouseAdmin(admin.ModelAdmin):
-    list_display = ["number","name"]
+    list_display = ["id","number","name"]
 
     def get_queryset(self, request):
         nhood_id = Neighborhood.objects.filter(user_id = request.user.id).first()

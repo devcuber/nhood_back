@@ -26,7 +26,6 @@ class Balance(models.Model):
         self.balance = balance_total
         self.debt    = debt
         self.save()
-
     
 class Movement(models.Model):
     date        = models.DateTimeField()
