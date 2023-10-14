@@ -10,13 +10,19 @@ class SavingsSummaryView(APIView):
         nhood_id = balance.house.Neighborhood_id
 
         last_movement = Movement.objects.filter(Neighborhood_id = nhood_id).order_by('-date','-time').first()
+        last_movement = f'{last_movement.date.strftime("%d/%m/%Y")} {last_movement.time}' if last_movement else '-'
         
         nhood_payments_in  = Payment.objects.filter(house__house__Neighborhood_id = nhood_id, ispaid = True).aggregate(Sum('amount'))
-        nhood_payments_out = {'amount__sum':0} 
-        nhood_balance = nhood_payments_in.get('amount__sum',0) - nhood_payments_out.get('amount__sum',0)
+        nhood_payments_in  = nhood_payments_in.get('amount__sum',0)
+        nhood_payments_in  = nhood_payments_in if nhood_payments_in else 0
+
+        nhood_payments_out = 0 
+
+        nhood_balance = nhood_payments_in - nhood_payments_out
 
         nhood_debt = Payment.objects.filter(house__house__Neighborhood_id = nhood_id, ispaid = False).aggregate(Sum('amount'))
-        nhood_debt = nhood_debt['amount__sum']
+        nhood_debt = nhood_debt.get('amount__sum',0)
+        nhood_debt = nhood_debt if nhood_debt else 0
 
         return Response({
             "my_current_balance"           : "${:,.2f}".format(balance.balance),
@@ -27,7 +33,7 @@ class SavingsSummaryView(APIView):
             "our_current_balance_label"    : f"Saldo {balance.house.Neighborhood.name}",
             "our_outstanding_balance"      : "${:,.2f}".format(nhood_debt),
             "our_outstanding_balance_label": f"Pendiente {balance.house.Neighborhood.name}",
-            "updated_at"                   : f'{last_movement.date.strftime("%d/%m/%Y")} {last_movement.time}',
+            "updated_at"                   : last_movement,
             "updated_at_label"             : "Actualizado"
         })
 
