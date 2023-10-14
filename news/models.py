@@ -4,7 +4,7 @@ from neighborhood.models import Neighborhood
 class News(models.Model):
     title       = models.CharField(max_length= 30)
     text        = models.TextField(max_length= 100)
-    link        = models.URLField(max_length= 50, null=True)
+    link        = models.URLField(max_length= 50, null=True, blank=True)
     date        = models.DateTimeField()
     Neighborhood= models.ForeignKey(Neighborhood, on_delete=models.CASCADE)
 
